@@ -1,0 +1,244 @@
+.btn {
+    border: 1px solid rgba(0, 0, 0, 25%)
+}
+
+.table {
+    color: ghostwhite
+}
+
+.table-striped>tbody>tr:nth-child(odd)>td,
+.table-striped>tbody>tr:nth-child(odd)>th {
+    --bs-table-accent-bg: rgb(0 0 0 / 25%);
+    color: ghostwhite
+}
+
+body {
+    background: #268780;
+    color: ghostwhite;
+    height: 100vh;
+    position: relative;
+}
+
+.back-img {
+    height: 100%;
+    width: 100%;
+    opacity: 0.5;
+    position: absolute;
+    z-index: -2;
+    background-image: url("../assets/img/IT.jpg");
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+}
+
+.title {
+    width: 90%;
+}
+
+.subtitle {
+    width: 90%;
+    margin-left: 5%;
+    background-color: #1e9d8b;
+}
+
+.slide-start-title {
+    width: 90%;
+    text-align: left;
+    background-color: #1e9d8b;
+}
+
+.name-input-div {
+    width: 90%;
+    text-align: left;
+    background-color: #1e9d8b;
+}
+
+.rules-div {
+    width: 90%;
+    text-align: left;
+    background-color: #1e9d8b;
+}
+
+.intro-div {
+    width: 90%;
+    padding-bottom: 8% !important;
+    text-align: left;
+    background-color: #1e9d8b;
+}
+
+.puzzle-div {
+    width: 90%;
+    text-align: left;
+    background-color: #1e9d8b;
+}
+
+.puzzle-input {
+    height: 90%;
+    border-radius: 0px;
+    font-size: 26px;
+}
+
+.puzzle-hints-text {
+    position: absolute;
+    top: 76%;
+    font-size: 32px;
+    text-align: center;
+    color: #d57838;
+    text-shadow: 2px 0 #fff, -2px 0 #fff, 0 2px #fff, 0 -2px #fff, 1px 1px #fff, -1px -1px #fff, 1px -1px #fff, -1px 1px #fff;
+}
+
+.puzzle-hints-glass {
+    height: 12%;
+    position: absolute;
+    top: 73%;
+    opacity: 0.9;
+}
+
+.puzzle-hints-bulb {
+    height: 13%;
+    position: absolute;
+    top: 72%;
+    opacity: 0.9;
+}
+
+.stickerSafe {
+    height: 50%;
+    position: absolute;
+    top: 28%;
+    left: 65%;
+    opacity: 0.95;
+}
+
+.modal-custom {
+    background-color: #ffffff;
+    border-color: #d57838;
+    border-width: thick;
+    color: #d57838;
+}
+
+.modal-danger {
+    background-color: #ffffff;
+    border-color: #a5594c;
+    border-width: thick;
+    color: #a5594c;
+}
+
+.table-custom {
+    width: 90%;
+    margin-left: 4%;
+    background-color: #1e9d8b;
+    font-size: 26px;
+}
+
+.btn-custom {
+    min-width: 212px;
+    border-radius: 0px;
+    color: #ffffff;
+    background-color: #d57838;
+    font-family: AsoSansBold;
+    font-size: 35px;
+}
+
+.btn-custom-hints {
+    border-radius: 0px;
+    color: #ffffff;
+    background-color: #d57838;
+    font-family: AsoSansBold;
+    font-size: 25px;
+}
+
+.btn-custom-modal {
+    border-radius: 0px;
+    color: #ffffff;
+    background-color: #d57838;
+    font-family: AsoSansBold;
+    font-size: 25px;
+}
+
+.background-bulb {
+    background-repeat: no-repeat;
+    background-position: 400px;
+    background-image: url("../assets/img/bulb-hint.png");
+}
+
+.background-glass {
+    background-repeat: no-repeat;
+    background-position: 405px -225px;
+    background-image: url("../assets/img/glass-hint.png");
+}
+
+.background-danger {
+    background-repeat: no-repeat;
+    background-position: 500px -220px;
+    background-image: url("../assets/img/danger.png");
+}
+
+.background-mistake {
+    background-repeat: no-repeat;
+    background-position: 500px -145px;
+    background-image: url("../assets/img/cross.png");
+}
+
+.alert-custom {
+    width: 50%;
+    position: absolute;
+    left: 25%;
+    top: 5%;
+}
+
+.hidden {
+    display: none;
+}
+
+.asoR {
+    font-family: AsoSansRegular;
+}
+
+.asoM {
+    font-family: AsoSansMedium;
+}
+
+.asoB {
+    font-family: AsoSansBold;
+}
+
+.slideHidden {
+    display: none;
+}
+
+.mainContainer {
+    background-color: #1e9d8b;
+    opacity: 100%;
+}
+
+::-webkit-scrollbar {
+    width: 10px;
+}
+
+::-webkit-scrollbar-track {
+    box-shadow: inset 0 0 8px #d57838;
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #d57838;
+    border-radius: 10px;
+}
+
+@font-face {
+    font-family: AsoSansRegular;
+    src: url("../assets/font/AzoSans-Regular.woff");
+}
+
+@font-face {
+    font-family: AsoSansMedium;
+    src: url("../assets/font/AzoSans-Medium.woff");
+}
+
+@font-face {
+    font-family: AsoSansBold;
+    src: url("../assets/font/AzoSans-Bold.woff");
+}
+
+
+/* 1024 x 600 #1e9d8b */

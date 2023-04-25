@@ -1,0 +1,40 @@
+<!-- Landing page There's no sitemap written but the structure should be rather simple. _DOCS - Contains all the documents related to the page (currently just the powerpoint from Josefin) css - Contains custom stylesheets game - Contains the application itself for all three languages (en, fi and se) node_modules - Contains external libraries. Downloaded with Yarn package manager (currently just Bootstrap and jQuery) -->
+<!DOCTYPE html>
+<html lang=en>
+
+<head>
+    <meta charset=UTF-8>
+    <meta name=viewport content="width=device-width, initial-scale=1" 0>
+    <title>Technobothnia Escape Room</title>
+    <link rel=stylesheet href=index/node_modules/bootstrap/dist/css/bootstrap.css>
+    <link rel=stylesheet href=index/css/main.css>
+    <script src=index/node_modules/bootstrap/dist/js/bootstrap.js></script>
+    <script src=index/node_modules/jquery/dist/jquery.min.js></script>
+    <script>
+        $(function() {
+            $("#start-fi").on("click", function() {
+                window.location.replace("index/game/fi/index.html")
+            });
+            $("#start-se").on("click", function() {
+                window.location.replace("index/game/se/index.html")
+            });
+            $("#start-en").on("click", function() {
+                window.location.replace("index/game/en/index.html")
+            })
+        });
+    </script>
+</head>
+
+<body>
+    <div class=back-img></div>
+    <div class="col-12 p-3 text-center"> <img class="mt-5 title" src=index/assets/img/logo.svg>
+        <h2 id=testCookies class="p-2 subtitle asoR">ESCAPE ROOM<span class=asoB>GAME</span></h2>
+        <div class=row style=margin-top:20%>
+            <div class=col-4> <button type=button class="btn btn-custom pt-3" style=width:70% id=start-fi>SUOMI</button> </div>
+            <div class=col-4> <button type=button class="btn btn-custom pt-3" style=width:70% id=start-se>SVENSKA</button> </div>
+            <div class=col-4> <button type=button class="btn btn-custom pt-3" style=width:70% id=start-en>ENGLISH</button> </div>
+        </div>
+    </div>
+</body>
+
+</html>

@@ -1,0 +1,1177 @@
+<html lang=en>
+
+<head>
+    <meta charset=UTF-8>
+    <meta name=viewport content="width=device-width, initial-scale=1">
+    <title>Technobothnia Escape Room Game</title>
+    <link rel=stylesheet href=../../node_modules/bootstrap/dist/css/bootstrap.css>
+    <link rel=stylesheet href=../../css/main.css>
+    <style>
+        .btn {
+            border: 1px solid rgba(0, 0, 0, 25%)
+        }
+        
+        .table {
+            color: ghostwhite
+        }
+        
+        .table-striped>tbody>tr:nth-child(odd)>td,
+        .table-striped>tbody>tr:nth-child(odd)>th {
+            --bs-table-accent-bg: rgb(0 0 0 / 25%);
+            color: ghostwhite
+        }
+    </style>
+    <script src=../../node_modules/bootstrap/dist/js/bootstrap.js></script>
+    <script src=../../node_modules/jquery/dist/jquery.min.js></script>
+    <script>
+        const img = document.createElement("img");
+        class Puzzle {
+            constructor(hint1, hint2, hint3, solution) {
+                this.hint1 = hint1;
+                this.hint2 = hint2;
+                this.hint3 = hint3;
+                this.solution = solution;
+            }
+        }
+        class image {
+            constructor(hint1) {
+                this.hint1 = hint1;
+            }
+        }
+        let timer;
+        let seconds = 0;
+        let secondsTimer = 0;
+        let minutes = 0;
+        let minutesTimer = 0;
+        let hours = 0;
+        let hoursTimer = 0;
+        let hintsUsed = 0;
+        let group = "Anonymous";
+        $(function() {
+            initButtons();
+        });
+
+        function initButtons() {
+            $('.btnNextSlide').each(function() {
+                let target = $(this).data('target');
+                let parent = $(this).data('parent');
+                $(this).on('click', function() {
+                    $(parent).slideUp('fast', function() {
+                        $(target).slideDown('fast');
+                    });
+                });
+            });
+            $('.btn_transition').each(function() {
+                let target = $(this).data('target');
+                let parent = $(this).data('parent');
+                $(this).on('click', function() {
+                    $(parent).slideUp('fast', function() {
+                        $(target).slideDown('fast');
+                    });
+                });
+            });
+            $('#btn_enterName').on('click', function() {
+                let target = $(this).data('target');
+                let parent = $(this).data('parent');
+                let groupName = $('#group_name').val();
+                if (groupName) {
+                    group = groupName;
+                    $(parent).slideUp('fast', function() {
+                        $(target).slideDown('fast');
+                    });
+                } else {
+                    const errorModal = new bootstrap.Modal('#errorModalDialog');
+                    $('#errorModalTitle').text("MISSING NAME");
+                    $('#errorModalContent').text("Please give your group a name and then click continue.");
+                    $('#errorsModalCard').removeClass("background-mistake");
+                    $('#errorModalCard').addClass("background-danger");
+                    errorModal.show();
+                }
+            });
+            $('#btn_startGame2').on('click', function() {
+                timer = setInterval(function() {
+                    seconds++;
+                    if (seconds >= 60) {
+                        minutes++;
+                        seconds = 0;
+                    }
+                    if (minutes >= 60) {
+                        hours++;
+                        minutes = 0;
+                    }
+                    let secondsString = seconds;
+                    let minutesString = minutes;
+                    let hoursString = hours;
+                    if (seconds < 10)
+                        secondsString = "0" + seconds.toString();
+                    if (minutes < 10)
+                        minutesString = "0" + minutes.toString();
+                    if (hours < 10)
+                        hoursString = "0" + hours.toString();
+                    let timeString = hoursString + ":" + minutesString + ":" + secondsString;
+                    $('.timerDisplay').text(timeString);
+                }, 1000);
+                $('#slide_gameStart2').slideUp('fast', function() {
+                    $('#slide_transition_1').slideDown('fast');
+                });
+            });
+            $('#btn_endGame').on('click', function() {
+                clearInterval(timer);
+                let finalSeconds = seconds;
+                if (seconds < 10)
+                    finalSeconds = "0" + seconds;
+                let finalMinutes = minutes;
+                if (minutes < 10)
+                    finalMinutes = "0" + minutes;
+                let finalHours = hours;
+                if (hours < 10)
+                    finalHours = "0" + hours;
+                let finalTime = finalHours + ":" + finalMinutes + ":" + finalSeconds;
+                let date = new Date();
+                let dateString = date.toLocaleDateString('fi-FI');
+                let toAppend = `<tr><th>Group</th><th>Hints used</th><th>Time</th><th>Date</th></tr>`;
+                $('#table_score_head').append(toAppend);
+                toAppend = `<tr><td>${group}</td><td>${hintsUsed}</td><td>${finalTime}</td><td>${dateString}</td></tr>`;
+                $('#table_score_body').append(toAppend);
+                $('.alert').addClass("show");
+                $("#btn_restart").css("margin-top", "30%");
+                $('#slide_transition_end').slideUp('fast', function() {
+                    $('#slide_highscores').slideDown('fast');
+                });
+            });
+            $('#btn_restart').on('click', function() {
+                window.location.reload();
+            });
+        }
+        let puzzles = {
+            1: new Puzzle("To find the scale you need to know what a scale is?! Scale on a plan is used to represent a product in a paper in proportional size to the reality! Find the thickness of the tank, not the height, and do not get confused by the formulae and handwritten notes.", "To find the scale, compare a distance on the real paper to a given printed distance. Tip: Write the scale as ‘distance on paper: distance in real life’ ", "The scale can be found on the tank in the middle. 6mm thickness of the walls is given. How thick are they on the drawing? Write then: 'measured thickness:6'", "1:6"),
+            2: new Puzzle(" If you connect the wires correctly to build a circle, a UV light (blue one) will shine. Hidden clues become visible. The correct circuit is sown in the picture on the otherside of the box.", "Think outside the box. Or rather inside the box? You only need two cables to connect the circuit. Make sure both switches are on.", "Connect the circuit like the following picture and then turn off the lights: hp7w3", "hp7w3"),
+            3: new Puzzle("Problems fixing the code for the video game? We didn’t pay attention in class but instead we wrote a little story. So, Code the game first to unlock the jump before playing it.", "Look at the text when game over. Tip: Killing enemies also gives points!", "So, our game was too much for you. All you had to do was to get to the end with enough points! Well, let's be merciful, here's the answer: 4ek61.", "4ek61"),
+            4: new Puzzle("Is the line on your toothed wheels PERFECTLY aligned? Turn the 2 mast wheels if it is not really aligned.", "Do not lose sight of the code. Look through the holes in the wheels.", "If you align the 6 correct wheels on the base according to this picture you will be able to see the code on the base.", "597e5u"),
+            5: new Puzzle("Do not get side tracked by the balls themselves. You also don’t have to balance the balls. They should sit stable on the base.", "Sometimes the most obvious answer is the correct one. Don’t think too much.", "The answer to the puzzle was 6. Even though many balls are provided they all do not fit onto the base.", "6"),
+            6: new Puzzle("Safe time by ruling out the obvious incorrect choices. Can you find any sharp angles on the cylinder? Also, pay close attention to the way the numbers are written. TIP: It’s not a combination! ", "Can you find the solution by just looking or do you want an aid? Look closer at the cylinder!", "Write the code like this: /x/", "/5/"),
+            7: new Puzzle("Start by decoding the paper with the fitting key. Don’t get too side-tracked by the other papers and look closely at all the items you got.", " The solution mix can be difficult to calculate. Maybe you should pay more attention to the powder bottle and spoon and/or bottle of water?", "To find the code mix 30ml of water and 6 spoons of the Sodium carbonate from the powder bottle. Put it in the spray bottle and spray it on the paper with your language’s secret writing. A pink code should appear.", "64r7w3"),
+            8: new Puzzle("Open the safe with the code shown in the app. You will find a robotic arm. Go on the hunt for the necessary scale degrees in the previous puzzles. Use the correct pen. The colour of the pen holder should give you a hint", ": You are stuck on the base scale? Go to the console game, find the top-secret paper, and play the code in the game. Tip: You mustn’t play the game all the way through again. One more:Look at the order of x and y", "If you put the arm on the base correctly you will find the right grid block on the base. The codes can be found in the other puzzles (Cheat Code for console, on a Ping Pong ball, on the inside if the UV-circuit box, on the puzzle base of the toothed wheel puzzle, and in the small puzzle box of the invisible ink puzzle). Use the golden pen from the pencil case.", "9I3C")
+        }
+        let puzzle_image = {
+            1: new image(""),
+            2: new image(img.src = "UVCIRCUIT.png"),
+            3: new image(""),
+            4: new image(""),
+            5: new image(""),
+            6: new image(""),
+            7: new image(""),
+            8: new image(""),
+        }
+
+        function showHint(puzzleId, hint) {
+            let puzzle = puzzles[puzzleId];
+            let toShow = false;
+            let image_hint = false;
+            let image = puzzle_image[puzzleId];
+            let title = "";
+            switch (hint) {
+                case 1:
+                    toShow = puzzle.hint1;
+                    title = "HINT 1";
+                    image_hint = image.hint1;
+                    break;
+                case 2:
+                    toShow = puzzle.hint2;
+                    title = "HINT 2";
+                    break;
+                case 3:
+                    toShow = puzzle.hint3;
+                    title = "THE SOLUTION";
+                    break;
+                default:
+            }
+            if ($('#showHint-' + puzzleId + '-' + hint).hasClass("used")) {
+                const hintModal = new bootstrap.Modal('#hintModalDialog');
+                $('#hintModalContent').text(toShow);
+                $('#hintModalTitle').text(title);
+                if ((puzzleId == 2) && (hint == 3)) $('#solutionUV').removeClass("hidden");
+                else $('#solutionUV').addClass("hidden");
+                if ((puzzleId == 4) && (hint == 3)) $('#solutionToothWheels').removeClass("hidden");
+                else $('#solutionToothWheels').addClass("hidden");
+                hintModal.show();
+                return;
+            }
+            var secondsAux = seconds - secondsTimer;
+            var minutesAux = minutes - minutesTimer;
+            var hoursAux = hours - hoursTimer;
+            if ((hoursAux == 0 && minutesAux == 0) || (minutesAux == 1 && secondsAux < 30)) {
+                const errorModal = new bootstrap.Modal('#errorModalDialog');
+                $('#errorModalTitle').text("DON'T GIVE UP!");
+                $('#errorModalContent').text("You have to wait a bit longer to be able to use a hint.");
+                $('#errorsModalCard').removeClass("background-mistake");
+                $('#errorModalCard').addClass("background-danger");
+                errorModal.show();
+                return;
+            }
+            saveTime();
+            seconds += 30;
+            if (seconds >= 60) {
+                minutes++
+                seconds -= 60;
+            }
+            if (toShow) {
+                const hintModal = new bootstrap.Modal('#hintModalDialog');
+                $('#hintModalContent').text(toShow);
+                $('#hintModalTitle').text(title);
+                if (hint == 3) {
+                    $('#showHint-' + puzzleId + '-' + hint).addClass("used");
+                    $('#hintModalCard').removeClass("background-glass");
+                    $('#hintModalCard').addClass("background-bulb");
+                    if (puzzleId == 2) $('#solutionUV').removeClass("hidden");
+                    if (puzzleId == 4) $('#solutionToothWheels').removeClass("hidden");
+                } else {
+                    $('#hintModalCard').removeClass("background-bulb");
+                    $('#hintModalCard').addClass("background-glass");
+                    var nextHint = hint + 1;
+                    $('#showHint-' + puzzleId + '-' + hint).addClass("used");
+                    $('#showHint-' + puzzleId + '-' + nextHint).removeClass("hidden");
+                    $('#solutionUV').addClass("hidden");
+                    $('#solutionToothWheels').addClass("hidden");
+                }
+                hintModal.show();
+                hintsUsed++;
+            } else {
+                const errorModal = new bootstrap.Modal('#errorModalDialog');
+                $('#errorModalTitle').text("SOMETHING WENT WRONG");
+                $('#errorModalContent').text("Error occurred!");
+                $('#errorsModalCard').removeClass("background-mistake");
+                $('#errorModalCard').addClass("background-danger");
+                errorModal.show();
+            }
+        }
+
+        function checkSolution(puzzleId, inputId, sourceButton) {
+            let puzzle = puzzles[puzzleId];
+            let input = $(inputId);
+            let inputVal = input.val();
+            if (puzzle.solution === inputVal) {
+                let target = sourceButton.data('target');
+                let parent = sourceButton.data('parent');
+                $(parent).slideUp('fast', function() {
+                    $(target).slideDown('fast');
+                });
+            } else {
+                const errorModal = new bootstrap.Modal('#errorModalDialog');
+                $('#errorModalTitle').text("WRONG CODE");
+                $('#errorModalContent').text("Incorrect code! Please try again! If you're stuck try clicking the Hints to get some help.");
+                $('#errorsModalCard').removeClass("background-danger");
+                $('#errorModalCard').addClass("background-mistake");
+                errorModal.show();
+            }
+        }
+
+        function saveTime() {
+            secondsTimer = seconds;
+            minutesTimer = minutes;
+            hoursTimer = hours;
+        }
+    </script>
+</head>
+
+<body>
+    <div class=back-img></div>
+    <div class="alert alert-warning alert-dismissible alert-custom d-flex align-items-center fade">
+        <strong class=mx-2> It looks like you don't have internet connection so it won't be possible to upload your final time. Take a screenshot if you want us to upload it in the future.</strong>
+        <button type=button class=btn-close data-bs-dismiss=alert></button>
+    </div>
+    <div class="modal fade" style=color:black id=hintModalDialog tabindex=-1 aria-labelledby=hintModalTitle aria-hidden=true>
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div id=hintModalCard class="modal-content modal-custom">
+                <div class=modal-header>
+                    <h5 class="modal-title asoB" id=hintModalTitle>HINT TITLE HERE</h5>
+                    <button type=button class=btn-close data-bs-dismiss=modal aria-label=Close></button>
+                </div>
+                <div class=modal-body>
+                    <span id=hintModalContent class=asoR style=font-size:25px>HINT TEXT HERE TEST</span>
+                    <br><br>
+                    <img src=../../assets/img/SolutionUV.png id=solutionUV class=hidden>
+                    <img src=../../assets/img/SolutionWheels.png id=solutionToothWheels class=hidden style=max-width:100%>
+                </div>
+                <div class=modal-footer>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" style=color:black id=errorModalDialog tabindex=-1 aria-labelledby=errorModalTitle aria-hidden=true>
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div id=errorModalCard class="modal-content modal-danger">
+                <div class=modal-header>
+                    <h5 class="modal-title asoB" id=errorModalTitle>ERROR TITLE HERE</h5>
+                    <button type=button class=btn-close data-bs-dismiss=modal aria-label=Close></button>
+                </div>
+                <div class=modal-body>
+                    <span id=errorModalContent class=asoR style=font-size:25px>ERROR TEXT HERE TEST</span>
+                    <br><br>
+                </div>
+                <div class=modal-footer>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container-fluid p-3 h-100">
+        <div id=slide_start class>
+            <div class="slide_helpContent pt-4">
+                <br>
+                <div class="intro text-center mt-5 mb-5">
+                    <h1 class="asoR slide-start-title ms-5 p-3">WELCOME TO<br><span class=asoB>THE TECHNOBOTHNIA ESCAPE ROOM GAME!</span></h1>
+                </div>
+                <br><br>
+                <div class="name-input-div mt-5 ms-5 p-3">
+                    <p class="fs-3 asoR">
+                        <label for=group_name>PLEASE ENTER THE NAME OF YOUR GROUP HERE</label>
+                    </p>
+                    <div class="col-12 asoB">
+                        <input id=group_name type=text class="form-control fs-3" style=border-radius:0 autocomplete=off>
+                    </div>
+                </div>
+                <div class="col-12 text-end mt-5 p-3">
+                    <button type=button id=btn_enterName class="col btn btn-custom pt-3" data-parent=#slide_start data-target=#slide_help_1 style=margin-top:5%;margin-right:54px>CONTINUE</button>
+                </div>
+            </div>
+        </div>
+        <div id=slide_help_1 class=slideHidden>
+            <div class=slide_helpContent>
+                <div class="rules-div mt-3 ms-5 p-3" style=min-height:510px>
+                    <div class="row justify-content-end intro">
+                        <h1 class="col asoB">RULES</h1>
+                        <h1 class="col asoB" style=text-align:right>1/3</h1>
+                    </div>
+                    <p class="asoR fs-3 mt-5 mb-5">
+                        2 TO 4 PLAYERS (3 RECOMMENDED) <br><br> NO PUZZLE REQUIRES STRENGTH TO BE SOLVED. BE CAREFUL WHEN DEALING WITH THE COMPONENTS OF THE GAME <br><br> FOR A BETTER EXPERIENCE, THE USE OF MOBILE PHONES IS PROHIBITED
+                    </p>
+                </div>
+                <div class="col-12 text-end p-3">
+                    <button type=button id=btn_gotoSlideHelp2 data-target=#slide_help_2 data-parent=#slide_help_1 class="btnNextSlide btn btn-custom pt-3" style=margin-top:5%;margin-right:54px>CONTINUE</button>
+                </div>
+            </div>
+        </div>
+        <div id=slide_help_2 class=slideHidden>
+            <div class=slide_helpContent>
+                <div class="rules-div mt-3 ms-5 p-3" style=min-height:510px>
+                    <div class="row justify-content-end intro">
+                        <h1 class="col asoB">RULES</h1>
+                        <h1 class="col asoB" style=text-align:right>2/3</h1>
+                    </div>
+                    <p class="asoR fs-3 mt-5 mb-5">
+                        USING HINTS WILL NOT GIVE YOU ANY PENALTY. SO USE THEM WHEN YOU NEED THEM <br><br> WHAT YOU WILL NEED FOR EACH PUZZLE WILL BE INDICATED IN THE APPROPRIATE MOMENT <br><br> THE TABLET WILL ONLY GIVE YOU CLUES AND WILL BE USED TO
+                        ENTER THE CODES. IT IS NOT RELATED TO ANY PUZZLE
+                    </p>
+                </div>
+                <div class="col-12 text-end p-3">
+                    <button type=button id=btn_gotoSlideHelp3 data-target=#slide_help_3 data-parent=#slide_help_2 class="btnNextSlide btn btn-custom pt-3" style=margin-top:5%;margin-right:54px>CONTINUE</button>
+                </div>
+            </div>
+        </div>
+        <div id=slide_help_3 class=slideHidden>
+            <div class=slide_helpContent>
+                <div class="rules-div mt-3 ms-5 p-3" style=min-height:510px>
+                    <div class="row justify-content-end intro">
+                        <h1 class="col asoB">RULES</h1>
+                        <h1 class="col asoB" style=text-align:right>3/3</h1>
+                    </div>
+                    <p class="asoR fs-3 mt-5 mb-5">
+                        CODES CAN BE COMBINATIONS OF NUMBERS AND LETTERS. THEY CAN EVEN HAVE SYMBOLS! <br><br> A CODE HAS ONE USE. IT WILL NO LOGER BE REQUIRED FOR ANY OF THE FOLLOWING PUZZLES <br><br> THERE IS NO PENALTY FOR ENTERING THE WRONG CODE.
+                        TRY WITHOUT FEAR!
+                    </p>
+                </div>
+                <div class="col-12 text-end p-3">
+                    <button type=button id=btn_gotoGameStart data-target=#slide_gameStart data-parent=#slide_help_3 class="btnNextSlide btn btn-custom pt-3" style=margin-top:5%;margin-right:54px>CONTINUE</button>
+                </div>
+            </div>
+        </div>
+        <div id=slide_gameStart class="slideHidden h-100">
+            <div class="intro-div ms-5 p-3">
+                <div class="col-12 row justify-content-end intro">
+                    <h1 class="col asoB">WELCOME TO TECHNOBOTHNIA!</h1>
+                </div>
+                <div class="row p-3 pt-0">
+                    <div class="col-8 p-0">
+                        <video controls muted style=width:100%;height:100%>
+<source src=../../assets/videos/escaperoom1.mp4 type=video/mp4>
+</video>
+                    </div>
+                    <div class=col-4>
+                        <div class=asoR style=font-size:20px;max-height:450px;overflow-y:auto>
+                            <br> Hi! Welcome to Technobothnia. Nice to meet you. I am the Technobothnia Coordinator, Josefin, and I will be giving you a tour around the facilities today. <br><br> OH! What happened!?!? The lights went out! What’s going
+                            on? <br><br> Oh, and now the lights turn back on? Pfew, that was weird. <br><br> Do you see that too? There is a paper taped to this board. Let’s take a closer look at it! <br><br> This seems to be some kind of instruction...
+                            <br><br> The students are apparently playing a prank on the teachers today. But I think they got the dates wrong and didn’t know there would be a tour for students.<br><br> There are no teachers here right now. It seems that
+                            we’re going to have to do the puzzles. It says here that the doors only unlock when we finish all of them.
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 text-end ps-3 pe-4">
+                <button type=button id=btn_startGame data-target=#slide_noteStudents data-parent=#slide_gameStart class="btnNextSlide btn btn-custom mt-2 pt-3" style=width:20%;margin-top:5%;margin-right:54px>CONTINUE</button>
+            </div>
+        </div>
+        <div id=slide_noteStudents class="slideHidden h-100">
+            <div class=ms-5 style=width:90%>
+                <img src=../../assets/img/noteStudents.png style=width:100%;max-height:600px>
+            </div>
+            <div class="col-12 text-end ps-3 pe-4">
+                <button type=button id=btn_noteStudents data-target=#slide_gameStart2 data-parent=#slide_noteStudents class="btnNextSlide btn btn-custom mt-2 pt-3" style=width:20%;margin-top:5%;margin-right:54px>CONTINUE</button>
+            </div>
+        </div>
+        <div id=slide_gameStart2 class="slideHidden h-100">
+            <div class="intro-div ms-5 p-3">
+                <div class="col-12 row justify-content-end intro">
+                    <h1 class="col asoB">LET'S START!</h1>
+                </div>
+                <div class="row p-3 pt-0">
+                    <div class="col-8 p-0">
+                        <video controls muted style=width:100%;height:100%>
+<source src=../../assets/videos/escaperoom13.mp4 type=video/mp4>
+</video>
+                    </div>
+                    <div class=col-4>
+                        <div class=asoR style="height:calc(100% - 120px);font-size:20px">
+                            Let’s try the doors first! This can’t be real. Oh no, the doors are really locked! <br><br> We can’t get out. Where do we even start solving these puzzles?
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 text-end ps-3 pe-4">
+                <button type=button id=btn_startGame2 data-target=#slide_transition_1 class="btn btn-custom mt-2 pt-3" style=width:20%;margin-top:5%;margin-right:54px>START</button>
+            </div>
+        </div>
+        <div id=slide_transition_1 class="slideHidden h-100">
+            <div class="intro-div ms-5 p-3 pb-0">
+                <div class="col-12 row justify-content-end intro">
+                    <h1 class="col asoB">ENTRANCE</h1>
+                    <h1 class="col asoB" style=text-align:right><span class=timerDisplay>00:00:00</span></h1>
+                </div>
+                <div class="row p-3 pt-0">
+                    <div class="col-8 p-0">
+                        <video controls muted style=width:100%;height:100%>
+<source src=../../assets/videos/escaperoom2.mp4 type=video/mp4>
+</video>
+                    </div>
+                    <div class=col-4>
+                        <div class=asoR style="height:calc(100% - 120px);font-size:20px">
+                            Look! Perhaps one of the students left their backpack here? <br><br> Maybe we can use the stuff in this backpack later, but let’s look at this paper first. It looks like some kind of homework. <br><br> Hmm, the distances are
+                            missing from the drawing, and the scale is marked with a question mark. Perhaps figuring out the scale is the first puzzle.
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 text-end ps-3 pe-4">
+                <button type=button id=btn_gotoPuzzle1 data-target=#slide_puzzle_1 data-parent=#slide_transition_1 onclick=saveTime() class="btn btn_transition btn-custom mt-2 pt-3" style=width:20%;margin-top:5%;margin-right:54px>CONTINUE</button>
+            </div>
+        </div>
+        <div id=slide_puzzle_1 class="slideHidden h-100">
+            <div class="puzzle-div ms-5 p-3">
+                <div class="col-12 row justify-content-end intro ms-1">
+                    <h1 class="col asoB">TECHNICAL DRAWING</h1>
+                    <h1 class="col asoB" style=text-align:right><span class=timerDisplay>00:00:00</span></h1>
+                </div>
+                <div class="row p-3 pt-0">
+                    <div class=col-8>
+                        <div class=col-12 style=background:grey;height:450px>
+                            <img src=../../assets/img/Backpack.jpg style=width:100%;height:100%>
+                        </div>
+                        <div class="col-12 mt-3" style=height:75px>
+                            <div class="row justify-content-between">
+                                <div id=showHint-1-1 onclick=showHint(1,1) class=col-3>
+                                    <img src=../../assets/img/glass.png class=puzzle-hints-glass style=left:10%>
+                                    <div class="centered puzzle-hints-text asoB" style=left:10%>HINT 1</div>
+                                </div>
+                                <div id=showHint-1-2 onclick=showHint(1,2) class="col-3 hidden">
+                                    <img src=../../assets/img/glass.png class=puzzle-hints-glass style=left:30%>
+                                    <div class="centered puzzle-hints-text asoB" style=left:30%>HINT 2</div>
+                                </div>
+                                <div id=showHint-1-3 onclick=showHint(1,3) class="col-3 hidden">
+                                    <img src=../../assets/img/bulb.png class=puzzle-hints-bulb>
+                                    <div class="centered puzzle-hints-text asoB" style=left:48%>SOLUTION</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class=col-4>
+                        <div class=asoR style=font-size:20px;max-height:450px;overflow-y:auto>
+                            Let’s start off easy, shall we? <br><br> You teach a lot of complicated classes and topics, but do you also know the basics? <br><br> Can you think logically and find out the size of this tank? <br><br> You gave this as homework,
+                            but we want to see if you can do it yourselves. <br><br>
+                            <strong> Now you can use the papers in divider 1 of the folder. </strong>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row pt-2 ms-5">
+                <div class="col-4 ms-4 asoB">
+                    <input type=text placeholder=X:X class="form-control puzzle-input pt-2" id=puzzleSolution1 autocomplete=off>
+                </div>
+                <div class=col></div>
+                <div class="col-6 text-end">
+                    <button type=button onclick="checkSolution(1,'#puzzleSolution1',$(this))" id=btn_gotoTransition2 data-target=#slide_transition_2 data-parent=#slide_puzzle_1 class="btn btn_puzzle btn-custom pt-3" style=margin-right:72px>CONTINUE</button>
+                </div>
+            </div>
+        </div>
+        <div id=slide_transition_2 class="slideHidden h-100">
+            <img src=../../assets/img/Note1.png style=position:absolute;top:65%;left:5%>
+            <div class="intro-div ms-5 p-3 pb-0">
+                <div class="col-12 row justify-content-end intro">
+                    <h1 class="col asoB">TO THE ELECTRICAL LAB</h1>
+                    <h1 class="col asoB" style=text-align:right><span class=timerDisplay>00:00:00</span></h1>
+                </div>
+                <div class="row p-3 pt-0">
+                    <div class="col-8 p-0">
+                        <video controls muted style=width:100%;height:100%>
+<source src=../../assets/videos/escaperoom3.mp4 type=video/mp4>
+</video>
+                    </div>
+                    <div class=col-4>
+                        <div class=asoR style=font-size:20px;max-height:450px;overflow-y:auto>
+                            Great job with finishing the first game! <br><br> We have to hurry up, so follow me to the next room. I think I know where we have to look. Let’s go to the electrical lab! <br><br> There is some kind of circuit board here.
+                            The hint earlier said something about making good connections. What could that mean?
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 text-end ps-3 pe-4">
+                <button type=button id=btn_gotoPuzzle2 data-target=#slide_puzzle_2 data-parent=#slide_transition_2 class="btn btn_transition btn-custom mt-2 pt-3" style=width:20%;margin-top:5%;margin-right:54px>CONTINUE</button>
+            </div>
+        </div>
+        <div id=slide_puzzle_2 class="slideHidden h-100">
+            <div class="puzzle-div ms-5 p-3">
+                <div class="col-12 row justify-content-end intro ms-1">
+                    <h1 class="col asoB">UV-CIRCUIT</h1>
+                    <h1 class="col asoB" style=text-align:right><span class=timerDisplay>00:00:00</span></h1>
+                </div>
+                <div class="row p-3 pt-0">
+                    <div class=col-8>
+                        <div class=col-12 style=background:grey;height:450px>
+                            <img src=../../assets/img/UV.jpg style=width:100%;height:100%>
+                        </div>
+                        <div class="col-12 mt-3" style=height:75px>
+                            <div class="row justify-content-between">
+                                <div id=showHint-2-1 onclick=showHint(2,1) class=col-3>
+                                    <img src=../../assets/img/glass.png class=puzzle-hints-glass style=left:10%>
+                                    <div class="centered puzzle-hints-text asoB" style=left:10%>HINT 1</div>
+                                </div>
+                                <div id=showHint-2-2 onclick=showHint(2,2) class="col-3 hidden">
+                                    <img src=../../assets/img/glass.png class=puzzle-hints-glass style=left:30%>
+                                    <div class="centered puzzle-hints-text asoB" style=left:30%>HINT 2</div>
+                                </div>
+                                <div id=showHint-2-3 onclick=showHint(2,3) class="col-3 hidden">
+                                    <img src=../../assets/img/bulb.png class=puzzle-hints-bulb>
+                                    <div class="centered puzzle-hints-text asoB" style=left:48%>SOLUTION</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class=col-4>
+                        <div class=asoR style=font-size:20px;max-height:450px;overflow-y:auto>
+                            Lecturers rave on and on about how we students need to think interdisciplinary and how everything is connected, so now you have to connect things yourselves. <br><br> See if you can figure out the code written in invisible
+                            ink. It’s the only way to get closer to making it out of Technobothnia.
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row pt-2 ms-5">
+                <div class="col-4 ms-4 asoB">
+                    <input type=text placeholder=CODE class="form-control puzzle-input pt-2" id=puzzleSolution2 autocomplete=off>
+                </div>
+                <div class=col></div>
+                <div class="col-6 text-end">
+                    <button type=button onclick="checkSolution(2,'#puzzleSolution2',$(this))" id=btn_gotoTransition3 data-target=#slide_transition_3 data-parent=#slide_puzzle_2 class="btn btn_puzzle btn-custom pt-3" style=margin-right:72px>CONTINUE</button>
+                </div>
+            </div>
+        </div>
+        <div id=slide_transition_3 class="slideHidden h-100">
+            <img src=../../assets/img/Note2.png style=position:absolute;top:64%;left:8%;width:38%>
+            <div class="intro-div ms-5 p-3 pb-0">
+                <div class="col-12 row justify-content-end intro">
+                    <h1 class="col asoB">TOWARDS THE IT LAB</h1>
+                    <h1 class="col asoB" style=text-align:right><span class=timerDisplay>00:00:00</span></h1>
+                </div>
+                <div class="row p-3 pt-0">
+                    <div class="col-8 p-0">
+                        <video controls muted style=width:100%;height:100%>
+<source src=../../assets/videos/escaperoom4.mp4 type=video/mp4>
+</video>
+                    </div>
+                    <div class=col-4>
+                        <div class=asoR style="height:calc(100% - 120px);font-size:20px">
+                            So where do you think we should go next? <br><br> What about the IT Lab, “language” as in “programming language”? <br><br> Okay, let’s go, quick!
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 text-end ps-3 pe-4">
+                <button type=button id=btn_gotoTransition4 data-target=#slide_transition_4 data-parent=#slide_transition_3 class="btn btn_transition btn-custom mt-2 pt-3" style=width:20%;margin-top:5%;margin-right:54px>CONTINUE</button>
+            </div>
+        </div>
+        <div id=slide_transition_4 class="slideHidden h-100">
+            <div class="intro-div ms-5 p-3 pb-0">
+                <div class="col-12 row justify-content-end intro">
+                    <h1 class="col asoB">A WEIRD INVENTION</h1>
+                    <h1 class="col asoB" style=text-align:right><span class=timerDisplay>00:00:00</span></h1>
+                </div>
+                <div class="row p-3 pt-0">
+                    <div class="col-8 p-0">
+                        <video controls muted style=width:100%;height:100%>
+<source src=../../assets/videos/escaperoom5.mp4 type=video/mp4>
+</video>
+                    </div>
+                    <div class=col-4>
+                        <div class=asoR style="height:calc(100% - 120px);font-size:20px">
+                            Look what we found! <br><br> It looks like one of those retro gaming consoles with a crank. I have never seen that here before. <br><br> What happens if you turn on the console?
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 text-end ps-3 pe-4">
+                <button type=button id=btn_gotoPuzzle3 data-target=#slide_puzzle_3 data-parent=#slide_transition_4 class="btn btn_transition btn-custom mt-2 pt-3" style=width:20%;margin-top:5%;margin-right:54px>CONTINUE</button>
+            </div>
+        </div>
+        <div id=slide_puzzle_3 class="slideHidden h-100">
+            <div class="puzzle-div ms-5 p-3">
+                <div class="col-12 row justify-content-end intro ms-1">
+                    <h1 class="col asoB">VIDEOGAME CONSOLE</h1>
+                    <h1 class="col asoB" style=text-align:right><span class=timerDisplay>00:00:00</span></h1>
+                </div>
+                <div class="row p-3 pt-0">
+                    <div class=col-8>
+                        <div class=col-12 style=background:grey;height:450px>
+                            <img src=../../assets/img/VideogameConsole.jpg style=width:100%;height:100%>
+                        </div>
+                        <div class="col-12 mt-3" style=height:75px>
+                            <div class="row justify-content-between">
+                                <div id=showHint-3-1 onclick=showHint(3,1) class=col-3>
+                                    <img src=../../assets/img/glass.png class=puzzle-hints-glass style=left:10%>
+                                    <div class="centered puzzle-hints-text asoB" style=left:10%>HINT 1</div>
+                                </div>
+                                <div id=showHint-3-2 onclick=showHint(3,2) class="col-3 hidden">
+                                    <img src=../../assets/img/glass.png class=puzzle-hints-glass style=left:30%>
+                                    <div class="centered puzzle-hints-text asoB" style=left:30%>HINT 2</div>
+                                </div>
+                                <div id=showHint-3-3 onclick=showHint(3,3) class="col-3 hidden">
+                                    <img src=../../assets/img/bulb.png class=puzzle-hints-bulb>
+                                    <div class="centered puzzle-hints-text asoB" style=left:48%>SOLUTION</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class=col-4>
+                        <div class=asoR style=font-size:20px;max-height:450px;overflow-y:auto>
+                            Well, you've arrived earlier than we expected! <br><br> That's all right, now it's you who will have to do your homework before you can have fun. <br><br> Get the console to turn on and complete the code to be able to play
+                            the game and get the next password. <br><br>
+                            <strong> Now you can use the papers on divider 2 of the folder. </strong>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row pt-2 ms-5">
+                <div class="col-4 ms-4 asoB">
+                    <input type=text placeholder=CODE class="form-control puzzle-input pt-2" id=puzzleSolution3 autocomplete=off>
+                </div>
+                <div class=col></div>
+                <div class="col-6 text-end">
+                    <button type=button onclick="checkSolution(3,'#puzzleSolution3',$(this))" id=btn_gotoTransition5 data-target=#slide_transition_5 data-parent=#slide_puzzle_3 class="btn btn_puzzle btn-custom pt-3" style=margin-right:72px>CONTINUE</button>
+                </div>
+            </div>
+        </div>
+        <div id=slide_transition_5 class="slideHidden h-100">
+            <img src=../../assets/img/Note3.png style=position:absolute;top:62%;left:6%;width:64%>
+            <div class="intro-div ms-5 p-3 pb-0">
+                <div class="col-12 row justify-content-end intro">
+                    <h1 class="col asoB">MECHANICAL LAB</h1>
+                    <h1 class="col asoB" style=text-align:right><span class=timerDisplay>00:00:00</span></h1>
+                </div>
+                <div class="row p-3 pt-0">
+                    <div class="col-8 p-0">
+                        <video controls muted style=width:100%;height:100%>
+<source src=../../assets/videos/escaperoom6.mp4 type=video/mp4>
+</video>
+                    </div>
+                    <div class=col-4>
+                        <div class=asoR style="height:calc(100% - 120px);font-size:20px">
+                            Okay, so could this mean that the next test is in mechanical engineering? <br><br> Fast, follow me.
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 text-end ps-3 pe-4">
+                <button type=button id=btn_gotoTransition6 data-target=#slide_transition_6 data-parent=#slide_transition_5 class="btn btn_transition btn-custom mt-2 pt-3" style=width:20%;margin-top:5%;margin-right:54px>CONTINUE</button>
+            </div>
+        </div>
+        <div id=slide_transition_6 class="slideHidden h-100">
+            <div class="intro-div ms-5 p-3 pb-0">
+                <div class="col-12 row justify-content-end intro">
+                    <h1 class="col asoB">PATTERN</h1>
+                    <h1 class="col asoB" style=text-align:right><span class=timerDisplay>00:00:00</span></h1>
+                </div>
+                <div class="row p-3 pt-0">
+                    <div class="col-8 p-0">
+                        <video controls muted style=width:100%;height:100%>
+<source src=../../assets/videos/escaperoom7.mp4 type=video/mp4>
+</video>
+                    </div>
+                    <div class=col-4>
+                        <div class=asoR style="height:calc(100% - 120px);font-size:20px">
+                            We are here; this is the lab. <br><br> Let’s take a look around. Is there something out of order? <br><br> Ah, it’s here; hurry up! There seems to be a pattern on these toothed wheels... <br><br> Maybe if we connect them, we’ll
+                            know what to do next.
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 text-end ps-3 pe-4">
+                <button type=button id=btn_gotoPuzzle4 data-target=#slide_puzzle_4 data-parent=#slide_transition_6 class="btn btn_transition btn-custom mt-2 pt-3" style=width:20%;margin-top:5%;margin-right:54px>CONTINUE</button>
+            </div>
+        </div>
+        <div id=slide_puzzle_4 class="slideHidden h-100">
+            <div class="puzzle-div ms-5 p-3">
+                <div class="col-12 row justify-content-end intro ms-1">
+                    <h1 class="col asoB">TOOTH WHEELS</h1>
+                    <h1 class="col asoB" style=text-align:right><span class=timerDisplay>00:00:00</span></h1>
+                </div>
+                <div class="row p-3 pt-0">
+                    <div class=col-8>
+                        <div class=col-12 style=background:grey;height:450px>
+                            <img src=../../assets/img/ToothWheels.jpg style=width:100%;height:100%>
+                        </div>
+                        <div class="col-12 mt-3" style=height:75px>
+                            <div class="row justify-content-between">
+                                <div id=showHint-4-1 onclick=showHint(4,1) class=col-3>
+                                    <img src=../../assets/img/glass.png class=puzzle-hints-glass style=left:10%>
+                                    <div class="centered puzzle-hints-text asoB" style=left:10%>HINT 1</div>
+                                </div>
+                                <div id=showHint-4-2 onclick=showHint(4,2) class="col-3 hidden">
+                                    <img src=../../assets/img/glass.png class=puzzle-hints-glass style=left:30%>
+                                    <div class="centered puzzle-hints-text asoB" style=left:30%>HINT 2</div>
+                                </div>
+                                <div id=showHint-4-3 onclick=showHint(4,3) class="col-3 hidden">
+                                    <img src=../../assets/img/bulb.png class=puzzle-hints-bulb>
+                                    <div class="centered puzzle-hints-text asoB" style=left:48%>SOLUTION</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class=col-4>
+                        <div class=asoR style=font-size:20px;max-height:450px;overflow-y:auto>
+                            Let your gears turn for this puzzle. <br><br> Is your mind a well-oiled machine like this puzzle? <br><br> Find the code by fitting the toothed wheels onto the base.
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row pt-2 ms-5">
+                <div class="col-4 ms-4 asoB">
+                    <input type=text placeholder=CODE class="form-control puzzle-input pt-2" id=puzzleSolution4 autocomplete=off>
+                </div>
+                <div class=col></div>
+                <div class="col-6 text-end">
+                    <button type=button onclick="checkSolution(4,'#puzzleSolution4',$(this))" id=btn_gotoTransition7 data-target=#slide_transition_7 data-parent=#slide_puzzle_4 class="btn btn_puzzle btn-custom pt-3" style=margin-right:72px>CONTINUE</button>
+                </div>
+            </div>
+        </div>
+        <div id=slide_transition_7 class="slideHidden h-100">
+            <img src=../../assets/img/Note4.png style=position:absolute;top:64%;left:8%;width:38%>
+            <div class="intro-div ms-5 p-3 pb-0">
+                <div class="col-12 row justify-content-end intro">
+                    <h1 class="col asoB">PHYSICS LAB</h1>
+                    <h1 class="col asoB" style=text-align:right><span class=timerDisplay>00:00:00</span></h1>
+                </div>
+                <div class="row p-3 pt-0">
+                    <div class="col-8 p-0">
+                        <video controls muted style=width:100%;height:100%>
+<source src=../../assets/videos/escaperoom8.mp4 type=video/mp4>
+</video>
+                    </div>
+                    <div class=col-4>
+                        <div class=asoR style=font-size:20px;max-height:450px;overflow-y:auto>
+                            "Physical skills"… <br><br> I would guess that means the physics lab; let’s go have a look. <br><br> Aha! Those balls are still moving; that must mean we’re closing in on the students! <br><br> Let’s finish this puzzle quickly!
+                            First, we must fit as many ping pong balls as possible on the base.
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 text-end ps-3 pe-4">
+                <button type=button id=btn_gotoPuzzle5 data-target=#slide_puzzle_5 data-parent=#slide_transition_7 class="btn btn_transition btn-custom mt-2 pt-3" style=width:20%;margin-top:5%;margin-right:54px>CONTINUE</button>
+            </div>
+        </div>
+        <div id=slide_puzzle_5 class="slideHidden h-100">
+            <div class="puzzle-div ms-5 p-3">
+                <div class="col-12 row justify-content-end intro ms-1">
+                    <h1 class="col asoB">PING PONG BALLS</h1>
+                    <h1 class="col asoB" style=text-align:right><span class=timerDisplay>00:00:00</span></h1>
+                </div>
+                <div class="row p-3 pt-0">
+                    <div class=col-8>
+                        <div class=col-12 style=background:grey;height:450px>
+                            <img src=../../assets/img/PingPong.jpg style=width:100%;height:100%>
+                        </div>
+                        <div class="col-12 mt-3" style=height:75px>
+                            <div class="row justify-content-between">
+                                <div id=showHint-5-1 onclick=showHint(5,1) class=col-3>
+                                    <img src=../../assets/img/glass.png class=puzzle-hints-glass style=left:10%>
+                                    <div class="centered puzzle-hints-text asoB" style=left:10%>HINT 1</div>
+                                </div>
+                                <div id=showHint-5-2 onclick=showHint(5,2) class="col-3 hidden">
+                                    <img src=../../assets/img/glass.png class=puzzle-hints-glass style=left:30%>
+                                    <div class="centered puzzle-hints-text asoB" style=left:30%>HINT 2</div>
+                                </div>
+                                <div id=showHint-5-3 onclick=showHint(5,3) class="col-3 hidden">
+                                    <img src=../../assets/img/bulb.png class=puzzle-hints-bulb>
+                                    <div class="centered puzzle-hints-text asoB" style=left:48%>SOLUTION</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class=col-4>
+                        <div class=asoR style=font-size:20px;max-height:450px;overflow-y:auto>
+                            Let’s try out your patience, dear lecturers. <br><br> Can you sit through this tricky little puzzle and get the right answer? <br><br> How many balls can you fit onto the base without the balls touching each other and without
+                            destroying them?
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row pt-2 ms-5">
+                <div class="col-4 ms-4 asoB">
+                    <input type=text placeholder=CODE class="form-control puzzle-input pt-2" id=puzzleSolution5 autocomplete=off>
+                </div>
+                <div class=col></div>
+                <div class="col-6 text-end">
+                    <button type=button onclick="checkSolution(5,'#puzzleSolution5',$(this))" id=btn_gotoPuzzle6 data-target=#slide_puzzle_6 data-parent=#slide_puzzle_5 class="btn btn_puzzle btn-custom pt-3" style=margin-right:72px>CONTINUE</button>
+                </div>
+            </div>
+        </div>
+        <div id=slide_puzzle_6 class="slideHidden h-100">
+            <div class="puzzle-div ms-5 p-3">
+                <div class="col-12 row justify-content-end intro ms-1">
+                    <h1 class="col asoB">CONE SHAPE</h1>
+                    <h1 class="col asoB" style=text-align:right><span class=timerDisplay>00:00:00</span></h1>
+                </div>
+                <div class="row p-3 pt-0">
+                    <div class=col-8>
+                        <div class=col-12 style=background:grey;height:450px>
+                            <img src=../../assets/img/Cone.jpg style=width:100%;height:100%>
+                        </div>
+                        <div class="col-12 mt-3" style=height:75px>
+                            <div class="row justify-content-between">
+                                <div id=showHint-6-1 onclick=showHint(6,1) class=col-3>
+                                    <img src=../../assets/img/glass.png class=puzzle-hints-glass style=left:10%>
+                                    <div class="centered puzzle-hints-text asoB" style=left:10%>HINT 1</div>
+                                </div>
+                                <div id=showHint-6-2 onclick=showHint(6,2) class="col-3 hidden">
+                                    <img src=../../assets/img/glass.png class=puzzle-hints-glass style=left:30%>
+                                    <div class="centered puzzle-hints-text asoB" style=left:30%>HINT 2</div>
+                                </div>
+                                <div id=showHint-6-3 onclick=showHint(6,3) class="col-3 hidden">
+                                    <img src=../../assets/img/bulb.png class=puzzle-hints-bulb>
+                                    <div class="centered puzzle-hints-text asoB" style=left:48%>SOLUTION</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class=col-4>
+                        <div class=asoR style=font-size:20px;max-height:450px;overflow-y:auto>
+                            Today, we can use CAD programs for digitalizing ideas and creating technical drawings or blueprints. <br><br> You teach us how to use these programs, but can you think logically without them? <br><br> Which shape does the Cylinder
+                            surfaces have if the old-timey cone is cut open? <br><br>
+                            <strong> Now you can use the papers in divider 3 of the folder.</strong>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row pt-2 ms-5">
+                <div class="col-4 ms-4 asoB">
+                    <input type=text placeholder=CODE class="form-control puzzle-input pt-2" id=puzzleSolution6 autocomplete=off>
+                </div>
+                <div class=col></div>
+                <div class="col-6 text-end">
+                    <button type=button onclick="checkSolution(6,'#puzzleSolution6',$(this))" id=btn_gotoTransition8 data-target=#slide_transition_8 data-parent=#slide_puzzle_6 class="btn btn_puzzle btn-custom pt-3" style=margin-right:72px>CONTINUE</button>
+                </div>
+            </div>
+        </div>
+        <div id=slide_transition_8 class="slideHidden h-100">
+            <img src=../../assets/img/Note5.png style=position:absolute;top:65%;left:5%>
+            <div class="intro-div ms-5 p-3 pb-0">
+                <div class="col-12 row justify-content-end intro">
+                    <h1 class="col asoB">SNEAKY PRANKSTER</h1>
+                    <h1 class="col asoB" style=text-align:right><span class=timerDisplay>00:00:00</span></h1>
+                </div>
+                <div class="row p-3 pt-0">
+                    <div class="col-8 p-0">
+                        <video controls muted style=width:100%;height:100%>
+<source src=../../assets/videos/escaperoom9.mp4 type=video/mp4>
+</video>
+                    </div>
+                    <div class=col-4>
+                        <div class=asoR style="height:calc(100% - 120px);font-size:20px">
+                            What does that mean? <br><br> Hey! WAIT! Did you see that? <br><br> A student ran out of the Chemistry Lab! Let’s go take a look at what they did there. <br><br> I hope they didn’t make a mess.
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 text-end ps-3 pe-4">
+                <button type=button id=btn_gotoTransition9 data-target=#slide_transition_9 data-parent=#slide_transition_8 class="btn btn_transition btn-custom mt-2 pt-3" style=width:20%;margin-top:5%;margin-right:54px>CONTINUE</button>
+            </div>
+        </div>
+        <div id=slide_transition_9 class="slideHidden h-100">
+            <div class="intro-div ms-5 p-3 pb-0">
+                <div class="col-12 row justify-content-end intro">
+                    <h1 class="col asoB">IN THE SCIENCE LAB</h1>
+                    <h1 class="col asoB" style=text-align:right><span class=timerDisplay>00:00:00</span></h1>
+                </div>
+                <div class="row p-3 pt-0">
+                    <div class="col-8 p-0">
+                        <video controls muted style=width:100%;height:100%>
+<source src=../../assets/videos/escaperoom10.mp4 type=video/mp4>
+</video>
+                    </div>
+                    <div class=col-4>
+                        <div class=asoR style="height:calc(100% - 120px);font-size:20px">
+                            It’s another test; where do we start? <br><br> We probably have to mix a solution. But what do we do with it, and what does this code mean?
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 text-end ps-3 pe-4">
+                <button type=button id=btn_gotoPuzzle7 data-target=#slide_puzzle_7 data-parent=#slide_transition_9 class="btn btn_transition btn-custom mt-2 pt-3" style=width:20%;margin-top:5%;margin-right:54px>CONTINUE</button>
+            </div>
+        </div>
+        <div id=slide_puzzle_7 class="slideHidden h-100">
+            <div class="puzzle-div ms-5 p-3">
+                <div class="col-12 row justify-content-end intro ms-1">
+                    <h1 class="col asoB">INVISIBLE INK</h1>
+                    <h1 class="col asoB" style=text-align:right><span class=timerDisplay>00:00:00</span></h1>
+                </div>
+                <div class="row p-3 pt-0">
+                    <div class=col-8>
+                        <div class=col-12 style=background:grey;height:450px>
+                            <img src=../../assets/img/InvisibleInk.jpg style=width:100%;height:100%>
+                        </div>
+                        <div class="col-12 mt-3" style=height:75px>
+                            <div class="row justify-content-between">
+                                <div id=showHint-7-1 onclick=showHint(7,1) class=col-3>
+                                    <img src=../../assets/img/glass.png class=puzzle-hints-glass style=left:10%>
+                                    <div class="centered puzzle-hints-text asoB" style=left:10%>HINT 1</div>
+                                </div>
+                                <div id=showHint-7-2 onclick=showHint(7,2) class="col-3 hidden">
+                                    <img src=../../assets/img/glass.png class=puzzle-hints-glass style=left:30%>
+                                    <div class="centered puzzle-hints-text asoB" style=left:30%>HINT 2</div>
+                                </div>
+                                <div id=showHint-7-3 onclick=showHint(7,3) class="col-3 hidden">
+                                    <img src=../../assets/img/bulb.png class=puzzle-hints-bulb>
+                                    <div class="centered puzzle-hints-text asoB" style=left:48%>SOLUTION</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class=col-4>
+                        <div class=asoR style=font-size:20px;max-height:450px;overflow-y:auto>
+                            Teachers love to say that chemistry is everywhere, even if it is not visible, just like this code.
+                            <br><br> Gather all you know about chemistry and make us see. <br><br> Will you succeed?
+                            <br><br> Start by decoding the code, and then make the secret writing visible. <br><br>
+                            <strong> Now you can use the papers on divider 4 of the folder. </strong>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row pt-2 ms-5">
+                <div class="col-4 ms-4 asoB">
+                    <input type=text placeholder=CODE class="form-control puzzle-input pt-2" id=puzzleSolution7 autocomplete=off>
+                </div>
+                <div class=col></div>
+                <div class="col-6 text-end">
+                    <button type=button onclick="checkSolution(7,'#puzzleSolution7',$(this))" id=btn_gotoTransition10 data-target=#slide_transition_10 data-parent=#slide_puzzle_7 class="btn btn_puzzle btn-custom pt-3" style=margin-right:72px>CONTINUE</button>
+                </div>
+            </div>
+        </div>
+        <div id=slide_transition_10 class="slideHidden h-100">
+            <img src=../../assets/img/Note6.png style=position:absolute;top:62%;left:6%;width:66%>
+            <div class="intro-div ms-5 p-3 pb-0">
+                <div class="col-12 row justify-content-end intro">
+                    <h1 class="col asoB">CHATCH THEM!</h1>
+                    <h1 class="col asoB" style=text-align:right><span class=timerDisplay>00:00:00</span></h1>
+                </div>
+                <div class="row p-3 pt-0">
+                    <div class="col-8 p-0">
+                        <video controls muted style=width:100%;height:100%>
+<source src=../../assets/videos/escaperoom11.mp4 type=video/mp4>
+</video>
+                    </div>
+                    <div class=col-4>
+                        <div class=asoR style="height:calc(100% - 120px);font-size:20px">
+                            <strong> "Almost there! If only there was something that could help you with the heavy work and get the final test done on time Your students." </strong> <br><br> What about we follow the student we saw earlier, she went in
+                            the direction of the Robotics Lab I think.
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 text-end ps-3 pe-4">
+                <button type=button id=btn_gotoTransition11 data-target=#slide_transition_11 data-parent=#slide_transition_10 class="btn btn_transition btn-custom mt-2 pt-3" style=width:20%;margin-top:5%;margin-right:54px>CONTINUE</button>
+            </div>
+        </div>
+        <div id=slide_transition_11 class="slideHidden h-100">
+            <img src=../../assets/img/StickerSafe.png class=stickerSafe>
+            <div class="intro-div ms-5 p-3 pb-0">
+                <div class="col-12 row justify-content-end intro">
+                    <h1 class="col asoB">A LOCKER BOX?</h1>
+                    <h1 class="col asoB" style=text-align:right><span class=timerDisplay>00:00:00</span></h1>
+                </div>
+                <div class="row p-3 pt-0">
+                    <div class="col-8 p-0">
+                        <video controls muted style=width:100%;height:100%>
+<source src=../../assets/videos/escaperoom12.mp4 type=video/mp4>
+</video>
+                    </div>
+                    <div class=col-4>
+                        <div class=asoR style="height:calc(100% - 120px);font-size:20px">
+                            Hey, there is a locker box here; I didn’t see that here earlier. <br><br> Let’s open it and see what’s inside!
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 text-end ps-3 pe-4">
+                <button type=button id=btn_gotoPuzzle8 data-target=#slide_puzzle_8 data-parent=#slide_transition_11 class="btn btn_transition btn-custom mt-2 pt-3" style=width:20%;margin-top:5%;margin-right:54px>CONTINUE</button>
+            </div>
+        </div>
+        <div id=slide_puzzle_8 class="slideHidden h-100">
+            <div class="puzzle-div ms-5 p-3">
+                <div class="col-12 row justify-content-end intro ms-1">
+                    <h1 class="col asoB">ROBOTIC ARM</h1>
+                    <h1 class="col asoB" style=text-align:right><span class=timerDisplay>00:00:00</span></h1>
+                </div>
+                <div class="row p-3 pt-0">
+                    <div class=col-8>
+                        <div class=col-12 style=background:grey;height:450px>
+                            <img src=../../assets/img/RobotArm.jpg style=width:100%;height:100%>
+                        </div>
+                        <div class="col-12 mt-3" style=height:75px>
+                            <div class="row justify-content-between">
+                                <div id=showHint-8-1 onclick=showHint(8,1) class=col-3>
+                                    <img src=../../assets/img/glass.png class=puzzle-hints-glass style=left:10%>
+                                    <div class="centered puzzle-hints-text asoB" style=left:10%>HINT 1</div>
+                                </div>
+                                <div id=showHint-8-2 onclick=showHint(8,2) class="col-3 hidden">
+                                    <img src=../../assets/img/glass.png class=puzzle-hints-glass style=left:30%>
+                                    <div class="centered puzzle-hints-text asoB" style=left:30%>HINT 2</div>
+                                </div>
+                                <div id=showHint-8-3 onclick=showHint(8,3) class="col-3 hidden">
+                                    <img src=../../assets/img/bulb.png class=puzzle-hints-bulb>
+                                    <div class="centered puzzle-hints-text asoB" style=left:48%>SOLUTION</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class=col-4>
+                        <div class=asoR style=font-size:20px;max-height:450px;overflow-y:auto>
+                            Wouldn’t life be easier if robots could take over our tasks?
+                            <br><br> Sadly, humanity has not yet created the perfect robot. <br><br> Help the robotic arm out and adjust it so it can lead you out of Technobothnia. <br><br>
+                            <strong> You may need to consult the previous puzzles for clues. </strong>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row pt-2 ms-5">
+                <div class="col-4 ms-4 asoB">
+                    <input type=text placeholder=XY class="form-control puzzle-input pt-2" id=puzzleSolution8 autocomplete=off>
+                </div>
+                <div class=col></div>
+                <div class="col-6 text-end">
+                    <button type=button onclick="checkSolution(8,'#puzzleSolution8',$(this))" id=btn_gotoTransitionEnd data-target=#slide_transition_end data-parent=#slide_puzzle_8 class="btn btn_puzzle btn-custom pt-3" style=margin-right:72px>CONTINUE</button>
+                </div>
+            </div>
+        </div>
+        <div id=slide_transition_end class="slideHidden h-100">
+            <img src=../../assets/img/Note7.png style=position:absolute;top:65%;left:5%;width:66%>
+            <div class="intro-div ms-5 p-3 pb-0">
+                <div class="col-12 row justify-content-end intro">
+                    <h1 class="col asoB">CONGRATULATIONS!</h1>
+                    <h1 class="col asoB" style=text-align:right><span class=timerDisplay>00:00:00</span></h1>
+                </div>
+                <div class="row p-3 pt-0">
+                    <div class="col-8 p-0">
+                        <video controls muted style=width:100%;height:100%>
+<source src=../../assets/videos/escaperoom14.mp4 type=video/mp4>
+</video>
+                    </div>
+                    <div class=col-4>
+                        <div class=asoR style="height:calc(100% - 120px);font-size:20px">
+                            Yay! We did it; let’s use the code and get out of the building. <br><br> GREAT JOB! <br><br> YOU HAVE SUCCESSFULLY COMPLETED THE ESCAPE ROOM OF TECHNOBOTHNIA!
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 text-end ps-3 pe-4">
+                <button type=button id=btn_endGame class="btn btn_transition btn-custom mt-2 pt-3" style=width:20%;margin-top:5%;margin-right:54px>FINISH!</button>
+            </div>
+        </div>
+        <div id=slide_highscores class="h-100 slideHidden">
+            <div class="intro text-center mt-3 mb-2">
+                <h1 class="asoR slide-start-title ms-5 p-3">THE TECHNOBOTHNIA ESCAPE ROOM GAME<br><span class=asoB>LEADERBOARD</span></h1>
+            </div>
+            <table class="table table-responsive table-striped table-custom asoR">
+                <thead id=table_highscores_head>
+                </thead>
+                <tbody id=table_highscores_body class=asoR>
+                </tbody>
+            </table>
+            <table class="table table-responsive table-striped table-custom asoR">
+                <thead id=table_score_head>
+                </thead>
+                <tbody id=table_score_body class=asoR>
+                </tbody>
+            </table>
+            <div class="col-12 text-end p-3 pt-2">
+                <button type=button id=btn_restart class="btn btn_transition btn-custom p-3" style=width:28%;margin-right:54px>BACK TO START</button>
+            </div>
+        </div>
+    </div>
+</body>
+<script>
+    let input;
+    input = document.getElementById("group_name");
+    input.addEventListener("keypress", function(event) {
+        if (event.key === "Enter") {
+            let btn = $('#btn_enterName');
+            let target = btn.data('target');
+            let parent = btn.data('parent');
+            let groupName = $('#group_name').val();
+            if (groupName) {
+                group = groupName;
+                $(parent).slideUp('fast', function() {
+                    $(target).slideDown('fast');
+                });
+            } else {
+                const errorModal = new bootstrap.Modal('#errorModalDialog');
+                $('#errorModalTitle').text("MISSING NAME");
+                $('#errorModalContent').text("Please give your group a name and then click continue.");
+                $('#errorsModalCard').removeClass("background-mistake");
+                $('#errorModalCard').addClass("background-danger");
+                errorModal.show();
+            }
+        }
+    });
+    input = document.getElementById("puzzleSolution1");
+    addEnterListener(input, 1, "#puzzleSolution1", "#btn_gotoTransition2");
+    input = document.getElementById("puzzleSolution2");
+    addEnterListener(input, 2, "#puzzleSolution2", "#btn_gotoTransition3");
+    input = document.getElementById("puzzleSolution3");
+    addEnterListener(input, 3, "#puzzleSolution3", "#btn_gotoTransition5");
+    input = document.getElementById("puzzleSolution4");
+    addEnterListener(input, 4, "#puzzleSolution4", "#btn_gotoTransition7");
+    input = document.getElementById("puzzleSolution5");
+    addEnterListener(input, 5, "#puzzleSolution5", "#btn_gotoPuzzle6");
+    input = document.getElementById("puzzleSolution6");
+    addEnterListener(input, 6, "#puzzleSolution6", "#btn_gotoTransition8");
+    input = document.getElementById("puzzleSolution7");
+    addEnterListener(input, 7, "#puzzleSolution7", "#btn_gotoTransition10");
+    input = document.getElementById("puzzleSolution8");
+    addEnterListener(input, 8, "#puzzleSolution8", "#btn_gotoTransitionEnd");
+
+    function addEnterListener(input, index, id, btn) {
+        input.addEventListener("keypress", function(event) {
+            if (event.key === "Enter") {
+                checkSolution(index, id, $(btn));
+            }
+        });
+    }
+</script>
+
+</html>

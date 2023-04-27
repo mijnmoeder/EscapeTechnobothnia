@@ -153,16 +153,14 @@
             7: new Puzzle("Start by decoding the paper with the fitting key. Don’t get too side-tracked by the other papers and look closely at all the items you got.", " The solution mix can be difficult to calculate. Maybe you should pay more attention to the powder bottle and spoon and/or bottle of water?", "To find the code mix 30ml of water and 6 spoons of the Sodium carbonate from the powder bottle. Put it in the spray bottle and spray it on the paper with your language’s secret writing. A pink code should appear.", "64r7w3"),
             8: new Puzzle("Open the safe with the code shown in the app. You will find a robotic arm. Go on the hunt for the necessary scale degrees in the previous puzzles. Use the correct pen. The colour of the pen holder should give you a hint", ": You are stuck on the base scale? Go to the console game, find the top-secret paper, and play the code in the game. Tip: You mustn’t play the game all the way through again. One more:Look at the order of x and y", "If you put the arm on the base correctly you will find the right grid block on the base. The codes can be found in the other puzzles (Cheat Code for console, on a Ping Pong ball, on the inside if the UV-circuit box, on the puzzle base of the toothed wheel puzzle, and in the small puzzle box of the invisible ink puzzle). Use the golden pen from the pencil case.", "9I3C")
         }
-        let puzzle_image = {
-            1: new image(""),
-            2: new image(img.src = "UVCIRCUIT.png"),
-            3: new image(""),
-            4: new image(""),
-            5: new image(""),
-            6: new image(""),
-            7: new image(""),
-            8: new image(""),
-        }
+
+        function ShowImage() {
+            document.addEventListener('DOMContentLoaded', function() {
+                const img = document.createElement('img');
+                img.src = 'https://example.com/image.jpg';
+                document.body.appendChild(img);
+            });
+        };
 
         function showHint(puzzleId, hint) {
             let puzzle = puzzles[puzzleId];
@@ -174,7 +172,6 @@
                 case 1:
                     toShow = puzzle.hint1;
                     title = "HINT 1";
-                    image_hint = image.hint1;
                     break;
                 case 2:
                     toShow = puzzle.hint2;
@@ -853,7 +850,7 @@
                         </div>
                         <div class="col-12 mt-3" style=height:75px>
                             <div class="row justify-content-between">
-                                <div id=showHint-6-1 onclick=showHint(6,1) class=col-3>
+                                <div id=showHint-6-1 onclick=showHint(6,1) onclick=ShowImage class=col-3>
                                     <img src=../../assets/img/glass.png class=puzzle-hints-glass style=left:10%>
                                     <div class="centered puzzle-hints-text asoB" style=left:10%>HINT 1</div>
                                 </div>

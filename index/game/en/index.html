@@ -154,14 +154,6 @@
             8: new Puzzle("Open the safe with the code shown in the app. You will find a robotic arm. Go on the hunt for the necessary scale degrees in the previous puzzles. Use the correct pen. The colour of the pen holder should give you a hint", ": You are stuck on the base scale? Go to the console game, find the top-secret paper, and play the code in the game. Tip: You mustn’t play the game all the way through again. One more:Look at the order of x and y", "If you put the arm on the base correctly you will find the right grid block on the base. The codes can be found in the other puzzles (Cheat Code for console, on a Ping Pong ball, on the inside if the UV-circuit box, on the puzzle base of the toothed wheel puzzle, and in the small puzzle box of the invisible ink puzzle). Use the golden pen from the pencil case.", "9I3C")
         }
 
-        function ShowImage() {
-            document.addEventListener('DOMContentLoaded', function() {
-                const img = document.createElement('img');
-                img.src = 'https://example.com/image.jpg';
-                document.body.appendChild(img);
-            });
-        };
-
         function showHint(puzzleId, hint) {
             let puzzle = puzzles[puzzleId];
             let toShow = false;

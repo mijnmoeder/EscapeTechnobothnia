@@ -87,6 +87,14 @@ body {
     text-shadow: 2px 0 #fff, -2px 0 #fff, 0 2px #fff, 0 -2px #fff, 1px 1px #fff, -1px -1px #fff, 1px -1px #fff, -1px 1px #fff;
 }
 
+.puzzle_logo {
+    height: 7%;
+    width: 5%;
+    position: absolute;
+    top: 6%;
+    left: 7%;
+}
+
 .puzzle-hints-glass {
     height: 12%;
     position: absolute;

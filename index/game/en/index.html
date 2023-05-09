@@ -158,7 +158,6 @@
             let puzzle = puzzles[puzzleId];
             let toShow = false;
             let image_hint = false;
-            let image = puzzle_image[puzzleId];
             let title = "";
             switch (hint) {
                 case 1:
@@ -1075,7 +1074,7 @@
                 </div>
             </div>
         </div>
-        <div id=slide_transition_end class="slideHidden h-100">
+        <div id=slide_transition_ class="slideHidden h-100">
             <img src=../../assets/img/Note7.png style=position:absolute;top:65%;left:5%;width:66%>
             <div class="intro-div ms-5 p-3 pb-0">
                 <div class="col-12 row justify-content-end intro">
@@ -1093,6 +1092,29 @@
                             Yay! We did it; let’s use the code and get out of the building. <br><br> GREAT JOB! <br><br> YOU HAVE SUCCESSFULLY COMPLETED THE ESCAPE ROOM OF TECHNOBOTHNIA!
                         </div>
                     </div>
+                </div>
+            </div>
+            <div id=slide_transition_13 class="slideHidden h-100">
+                <div class="intro-div ms-5 p-3 pb-0">
+                    <div class="col-12 row justify-content-end intro">
+                        <h1 class="col asoB">A LOCKER BOX?</h1>
+                        <h1 class="col asoB" style=text-align:right><span class=timerDisplay>00:00:00</span></h1>
+                    </div>
+                    <div class="row p-3 pt-0">
+                        <div class="col-8 p-0">
+                            <video controls muted style=width:100%;height:100%>
+        <source src=../../assets/videos/escaperoom12.mp4 type=video/mp4>
+        </video>
+                        </div>
+                        <div class=col-4>
+                            <div class=asoR style="height:calc(100% - 120px);font-size:20px">
+                                Hey, there is a locker box here; I didn’t see that here earlier. <br><br> Let’s open it by fixing the puzzle on it and see what’s inside! Maybe you could use the hint from the consol puzzle to open the locker.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-12 text-end ps-3 pe-4">
+                    <button type=button id=btn_gotoPuzzle8 data-target=#slide_puzzle_8 data-parent=#slide_transition_11 class="btn btn_transition btn-custom mt-2 pt-3" style=width:20%;margin-top:5%;margin-right:54px>CONTINUE</button>
                 </div>
             </div>
             <div class="col-12 text-end ps-3 pe-4">

@@ -1094,54 +1094,27 @@
                     </div>
                 </div>
             </div>
-            <div id=slide_transition_13 class="slideHidden h-100">
-                <div class="intro-div ms-5 p-3 pb-0">
-                    <div class="col-12 row justify-content-end intro">
-                        <h1 class="col asoB">A LOCKER BOX?</h1>
-                        <h1 class="col asoB" style=text-align:right><span class=timerDisplay>00:00:00</span></h1>
-                    </div>
-                    <div class="row p-3 pt-0">
-                        <div class="col-8 p-0">
-                            <video controls muted style=width:100%;height:100%>
-        <source src=../../assets/videos/escaperoom12.mp4 type=video/mp4>
-        </video>
-                        </div>
-                        <div class=col-4>
-                            <div class=asoR style="height:calc(100% - 120px);font-size:20px">
-                                Hey, there is a locker box here; I didn’t see that here earlier. <br><br> Let’s open it by fixing the puzzle on it and see what’s inside! Maybe you could use the hint from the consol puzzle to open the locker.
-                            </div>
-                        </div>
-                    </div>
+            <div id=slide_highscores class="h-100 slideHidden">
+                <div class="intro text-center mt-3 mb-2">
+                    <h1 class="asoR slide-start-title ms-5 p-3">THE TECHNOBOTHNIA ESCAPE ROOM GAME<br><span class=asoB>LEADERBOARD</span></h1>
                 </div>
-                <div class="col-12 text-end ps-3 pe-4">
-                    <button type=button id=btn_gotoPuzzle8 data-target=#slide_puzzle_8 data-parent=#slide_transition_11 class="btn btn_transition btn-custom mt-2 pt-3" style=width:20%;margin-top:5%;margin-right:54px>CONTINUE</button>
+                <table class="table table-responsive table-striped table-custom asoR">
+                    <thead id=table_highscores_head>
+                    </thead>
+                    <tbody id=table_highscores_body class=asoR>
+                    </tbody>
+                </table>
+                <table class="table table-responsive table-striped table-custom asoR">
+                    <thead id=table_score_head>
+                    </thead>
+                    <tbody id=table_score_body class=asoR>
+                    </tbody>
+                </table>
+                <div class="col-12 text-end p-3 pt-2">
+                    <button type=button id=btn_restart class="btn btn_transition btn-custom p-3" style=width:28%;margin-right:54px>BACK TO START</button>
                 </div>
             </div>
-            <div class="col-12 text-end ps-3 pe-4">
-                <button type=button id=btn_endGame class="btn btn_transition btn-custom mt-2 pt-3" style=width:20%;margin-top:5%;margin-right:54px>FINISH!</button>
-            </div>
         </div>
-        <div id=slide_highscores class="h-100 slideHidden">
-            <div class="intro text-center mt-3 mb-2">
-                <h1 class="asoR slide-start-title ms-5 p-3">THE TECHNOBOTHNIA ESCAPE ROOM GAME<br><span class=asoB>LEADERBOARD</span></h1>
-            </div>
-            <table class="table table-responsive table-striped table-custom asoR">
-                <thead id=table_highscores_head>
-                </thead>
-                <tbody id=table_highscores_body class=asoR>
-                </tbody>
-            </table>
-            <table class="table table-responsive table-striped table-custom asoR">
-                <thead id=table_score_head>
-                </thead>
-                <tbody id=table_score_body class=asoR>
-                </tbody>
-            </table>
-            <div class="col-12 text-end p-3 pt-2">
-                <button type=button id=btn_restart class="btn btn_transition btn-custom p-3" style=width:28%;margin-right:54px>BACK TO START</button>
-            </div>
-        </div>
-    </div>
 </body>
 <script>
     let input;
